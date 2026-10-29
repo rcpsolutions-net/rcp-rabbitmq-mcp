@@ -1,0 +1,27 @@
+{
+  "name": "rcp-rabbitmq-mcp",
+  "version": "0.1.0",
+  "description": "Standalone MCP server for RabbitMQ: publish, consume, inspect, and manage queues/exchanges",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "rcp-rabbitmq-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "amqplib": "^0.10.4",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}
