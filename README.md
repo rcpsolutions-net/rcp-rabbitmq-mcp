@@ -112,6 +112,10 @@ management-API listing, exchange declaration + binding, and a destructive delete
 
 ## Gotchas
 
+- **A publish that nothing receives is an error.** `rabbitmq_publish` publishes with `mandatory` on a confirm channel, so a
+  routing key that names no queue (on the default exchange, or no binding on an exchange) comes back as
+  `Not delivered: no queue received the message ...` with `isError`, instead of `published: true` and a message that vanished.
+
 - **`rabbitmq_list_queues` needs the management plugin** enabled
   (`rabbitmq-plugins enable rabbitmq_management`). Every other tool uses the AMQP
   protocol directly and does not.
