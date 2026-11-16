@@ -58,3 +58,17 @@ export async function withChannel<T>(fn: (ch: amqp.Channel) => Promise<T>): Prom
     await ch.close().catch(() => undefined);
   }
 }
+
+/**
+ * Like `withChannel`, but a confirm channel: the broker answers each publish, and (with `mandatory`) returns a message that
+ * no queue received before it confirms. Needed to learn that a publish went nowhere.
+ */
+export async function withConfirmChannel<T>(fn: (ch: amqp.ConfirmChannel) => Promise<T>): Promise<T> {
+  const model = await getChannelModel();
+  const ch = await model.createConfirmChannel();
+  try {
+    return await fn(ch);
+  } finally {
+    await ch.close().catch(() => undefined);
+  }
+}

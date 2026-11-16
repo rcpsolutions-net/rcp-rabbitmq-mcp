@@ -99,6 +99,16 @@ check('publish via exchange', !r.isError && r.parsed.published === true);
 r = await call('rabbitmq_check_queue', { queue: 'smoke-test' });
 check('message routed to bound queue', !r.isError && r.parsed.messageCount === 1, JSON.stringify(r.parsed));
 
+// 12b. A publish nothing receives is an error, not `published: true`
+r = await call('rabbitmq_publish', { exchange: '', routingKey: 'smoke-no-such-queue', message: 'lost' });
+check('publish to a name that is no queue -> isError, not delivered', r.isError === true && /Not delivered/.test(r.parsed.error ?? ''), JSON.stringify(r.parsed));
+r = await call('rabbitmq_publish', { exchange: 'smoke-ex', routingKey: 'unbound-key', message: 'lost' });
+check('publish to an exchange with nothing bound for the key -> isError', r.isError === true && /Not delivered/.test(r.parsed.error ?? ''), JSON.stringify(r.parsed));
+r = await call('rabbitmq_publish', { exchange: 'smoke-no-such-exchange', routingKey: 'x', message: 'lost' });
+check('publish to a missing exchange -> isError (and does not hang)', r.isError === true, JSON.stringify(r.parsed));
+r = await call('rabbitmq_check_queue', { queue: 'smoke-test' });
+check('the lost messages were not added to the queue', !r.isError && r.parsed.messageCount === 1, JSON.stringify(r.parsed));
+
 // 13. Delete queue (destructive)
 r = await call('rabbitmq_delete_queue', { queue: 'smoke-test' });
 check('delete_queue', !r.isError && r.parsed.deleted === true, JSON.stringify(r.parsed));

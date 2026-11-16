@@ -42,7 +42,7 @@ in-process `createSdkMcpServer`). Don't conflate the two.
 
 | Tool | Kind | Notes |
 |---|---|---|
-| `rabbitmq_publish` | write | publish to an exchange, or a queue via the default exchange (`exchange=""`) |
+| `rabbitmq_publish` | write | publish to an exchange, or a queue via the default exchange (`exchange=""`); `mandatory` on a confirm channel, so a publish no queue receives is an `isError` ("Not delivered"), not `published: true` |
 | `rabbitmq_consume` | write | read up to N messages; `remove=false` peeks (requeues), `remove=true` acks |
 | `rabbitmq_list_queues` | read-only | lists all queues via the **management HTTP API** (needs the mgmt plugin) |
 | `rabbitmq_check_queue` | read-only | inspect one queue via AMQP `checkQueue` (no mgmt plugin needed) |
